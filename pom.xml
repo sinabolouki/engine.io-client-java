@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>io.socket</groupId>
+  <groupId>com.github.sinabolouki</groupId>
   <artifactId>engine.io-client</artifactId>
   <version>2.1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -54,12 +54,12 @@
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20090211</version>
+      <version>20231013</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>4.13.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -70,16 +70,16 @@
     </dependency>
   </dependencies>
 
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/sinabolouki/engine.io-client-java</url>
+        </snapshotRepository>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/sinabolouki/engine.io-client-java</url>
+        </repository>
+    </distributionManagement>
 
   <build>
     <plugins>
@@ -88,8 +88,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.5.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.8</source>
+          <target>1.8</target>
           <compilerArgs>
             <arg>-Xlint:unchecked</arg>
           </compilerArgs>
@@ -111,21 +111,34 @@
           </systemProperties>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-gpg-plugin</artifactId>
-        <version>1.6</version>
-        <executions>
-          <execution>
-            <id>sign-artifacts</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>sign</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.2.4</version>
+            <executions>
+                <execution>
+                    <id>sign-artifacts</id>
+                    <phase>verify</phase>
+                    <goals>
+                        <goal>sign</goal>
+                    </goals>
+                    <configuration>
+                        <!-- If your binary is 'gpg', leave as is; use 'gpg2' if needed -->
+                        <gpgExecutable>gpg</gpgExecutable>
+
+                        <!-- Make non-GUI passphrase entry work on WSL -->
+                        <gpgArguments>
+                            <arg>--pinentry-mode</arg>
+                            <arg>loopback</arg>
+                        </gpgArguments>
+
+                        <!-- (Optional) pick a specific key if you have multiple -->
+                        <!-- <keyname>YOUR_LONG_KEY_ID</keyname> -->
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
         <version>3.0.1</version>
@@ -160,17 +173,6 @@
           <useReleaseProfile>false</useReleaseProfile>
           <releaseProfiles>release</releaseProfiles>
           <goals>deploy</goals>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.7</version>
-        <extensions>true</extensions>
-        <configuration>
-          <serverId>ossrh</serverId>
-          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>true</autoReleaseAfterClose>
         </configuration>
       </plugin>
       <plugin>
